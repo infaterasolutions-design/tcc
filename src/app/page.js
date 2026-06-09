@@ -19,7 +19,8 @@ export default function Home() {
           .subscribe-input-group { width: 100%; justify-content: center; }
           .shop-videos-row { flex-wrap: nowrap !important; overflow-x: auto; scroll-snap-type: x mandatory; justify-content: flex-start !important; scrollbar-width: none; }
           .shop-videos-row::-webkit-scrollbar { display: none; }
-          .shop-videos-item { min-width: 60% !important; scroll-snap-align: center; margin-bottom: 0 !important; flex-shrink: 0; }
+          .shop-videos-item { min-width: 65% !important; scroll-snap-align: center; margin-bottom: 0 !important; flex-shrink: 0; }
+          .shop-videos-title { min-width: 35% !important; flex-shrink: 0; scroll-snap-align: start; }
         }
         @media (min-width: 601px) and (max-width: 1024px) {
           .recent-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -210,8 +211,10 @@ export default function Home() {
         {/* Shop by Trending Videos */}
         <section>
           <div className="flex gap-sm shop-videos-row" style={{ backgroundColor: 'var(--color-accent)', padding: '0.5rem' }}>
-            <div className="shop-videos-item" style={{ flex: '0.8', display: 'flex', alignItems: 'center', justifyItems: 'center', alignContent: 'center', justifyContent: 'center', position: 'sticky', left: 0, zIndex: 0, backgroundColor: 'var(--color-accent)' }}>
-               <h2 className="text-serif text-center" style={{ fontSize: '1.5rem', color: 'var(--color-gray)' }}>SHOP<br/>MY<br/>VIDEOS<br/><span style={{fontSize:'1rem'}}>→</span></h2>
+            <div className="shop-videos-title" style={{ flex: '0.8', display: 'flex', alignItems: 'center', justifyItems: 'center', alignContent: 'center', justifyContent: 'center', position: '-webkit-sticky', left: 0, zIndex: 0, backgroundColor: 'var(--color-accent)' }}>
+               <div style={{ position: 'sticky', left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <h2 className="text-serif text-center" style={{ fontSize: '1.5rem', color: 'var(--color-gray)' }}>SHOP<br/>MY<br/>VIDEOS<br/><span style={{fontSize:'1rem'}}>→</span></h2>
+               </div>
             </div>
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="shop-videos-item" style={{ flex: '1', position: 'relative', zIndex: 5, backgroundColor: '#fff' }}>
