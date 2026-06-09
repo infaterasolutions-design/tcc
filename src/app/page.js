@@ -3,24 +3,60 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="home-wrapper">
+      <style>{`
+        @media (max-width: 900px) {
+          .hero-section { flex-direction: column !important; }
+          .hero-left { padding: 3rem 1.5rem !important; text-align: center; }
+          .hero-left h1 { fontSize: 2.5rem !important; }
+          .hero-right { padding: 2rem !important; }
+          .trending-grid { grid-template-columns: 1fr !important; padding: 1.5rem !important; }
+          .trending-featured { flex-direction: column !important; margin-right: 0 !important; max-height: none !important; }
+          .trending-featured-text { padding: 1.5rem !important; }
+          .trending-list { border-left: none !important; padding-left: 0 !important; margin-top: 2rem !important; }
+          .trending-nav, .recent-nav { display: none !important; }
+          .recent-grid { grid-template-columns: 1fr !important; }
+          .subscribe-section { flex-direction: column !important; text-align: center; gap: 1.5rem !important; }
+          .subscribe-input-group { width: 100%; justify-content: center; }
+          .shop-videos-row { flex-wrap: nowrap !important; overflow-x: auto; scroll-snap-type: x mandatory; justify-content: flex-start !important; scrollbar-width: none; }
+          .shop-videos-row::-webkit-scrollbar { display: none; }
+          .shop-videos-item { min-width: 60% !important; scroll-snap-align: center; margin-bottom: 0 !important; flex-shrink: 0; }
+        }
+        @media (min-width: 601px) and (max-width: 1024px) {
+          .recent-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        .shop-videos-row {
+          display: flex;
+          overflow-x: auto;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none;  /* IE and Edge */
+          scroll-snap-type: x mandatory;
+        }
+        .shop-videos-row::-webkit-scrollbar {
+          display: none; /* Chrome, Safari and Opera */
+        }
+        .shop-videos-item {
+          scroll-snap-align: start;
+          flex-shrink: 0;
+        }
+      `}</style>
       <main className="container" style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         
         {/* Hero Section */}
-        <section className="flex" style={{ minHeight: '550px' }}>
-          {/* Left Half */}
-          <div className="w-full flex items-center justify-center" style={{ backgroundColor: '#faf9f6', padding: '3rem' }}>
+        <section className="flex hero-section" style={{ minHeight: '550px' }}>
+          {/* Left Half (Image) */}
+          <div className="w-full flex items-center justify-center hero-right" style={{ backgroundColor: '#e5dfd5', padding: '4rem' }}>
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600" alt="Hero model" className="object-cover" style={{ width: '100%', maxWidth: '400px', height: 'auto' }} />
+          </div>
+          {/* Right Half (Text) */}
+          <div className="w-full flex items-center justify-center hero-left" style={{ backgroundColor: '#faf9f6', padding: '3rem' }}>
             <div style={{ maxWidth: '480px' }}>
-              <h1 className="text-serif" style={{ fontSize: '4rem', fontWeight: '800', lineHeight: '1.05', marginBottom: '1.5rem', color: '#000', letterSpacing: '-1px' }}>
+              <h1 className="text-serif" style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', fontWeight: '800', lineHeight: '1.05', marginBottom: '1.5rem', color: '#000', letterSpacing: '-1px' }}>
                 Welcome to<br/>Minimalist<br/>Sophistication with<br/>Maximum Style
               </h1>
               <p className="text-sans" style={{ color: '#000', fontSize: '0.9rem', lineHeight: '1.8', fontWeight: '400' }}>
                 The Combo Closet is an inspired style, home, and beauty destination for those who prefer quality over quantity, subtle over obvious, and ease over complexity.
               </p>
             </div>
-          </div>
-          {/* Right Half */}
-          <div className="w-full flex items-center justify-center" style={{ backgroundColor: '#e5dfd5', padding: '4rem' }}>
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600" alt="Hero model" className="object-cover" style={{ width: '100%', maxWidth: '400px', height: 'auto' }} />
           </div>
         </section>
 
@@ -32,7 +68,7 @@ export default function Home() {
                <span className="text-serif" style={{ fontSize: '2rem', fontWeight: 'bold', letterSpacing: '-1px' }}>tcc</span>
                <span className="text-script" style={{ fontSize: '4rem', color: '#000', lineHeight: '0.5' }}>trending</span>
             </div>
-            <nav className="flex uppercase text-sans" style={{ gap: '1.5rem', fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.05em', color: 'var(--color-gray)' }}>
+            <nav className="flex uppercase text-sans trending-nav" style={{ gap: '1.5rem', fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.05em', color: 'var(--color-gray)' }}>
                <span style={{ backgroundColor: '#000', color: '#fff', padding: '0.5rem 1rem' }}>POPULAR</span>
                <span style={{ padding: '0.5rem 0' }}>TRAVEL TIPS</span>
                <span style={{ padding: '0.5rem 0' }}>OUTFIT GUIDES</span>
@@ -41,10 +77,10 @@ export default function Home() {
           </div>
 
           {/* Main Container */}
-          <div style={{ backgroundColor: '#e5dfd5', padding: '2rem', display: 'grid', gridTemplateColumns: '70% 30%' }}>
+          <div className="trending-grid" style={{ backgroundColor: '#e5dfd5', padding: '2rem', display: 'grid', gridTemplateColumns: '70% 30%' }}>
             
             {/* Left Column: Featured Post */}
-            <div style={{ backgroundColor: '#fff', display: 'flex', maxHeight: '380px', marginRight: '2.5rem' }}>
+            <div className="trending-featured" style={{ backgroundColor: '#fff', display: 'flex', maxHeight: '380px', marginRight: '2.5rem' }}>
                {/* Featured Image with overlay */}
                <div style={{ flex: '1', position: 'relative' }}>
                  <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=400" alt="Interior" className="object-cover w-full h-full" />
@@ -55,7 +91,7 @@ export default function Home() {
                  </div>
                </div>
                {/* Featured Text */}
-               <div style={{ flex: '1.2', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+               <div className="trending-featured-text" style={{ flex: '1.2', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                  <h2 className="text-serif" style={{ fontSize: '1.8rem', fontWeight: '800', lineHeight: '1.1', marginBottom: '0.8rem', color: '#000' }}>What to Buy on Amazon: Chic Finds for Every Category</h2>
                  <p className="text-sans" style={{ fontSize: '0.75rem', lineHeight: '1.6', color: '#000', marginBottom: '1rem' }}>You guys know how much I love a good Amazon find. Whether it's an essential item for travel, a kitchen gadget, or a trendy fashion piece at a great price, Amazon seemingly has it all plus incredibly fast shipping for...</p>
                  <div>
@@ -65,7 +101,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: List */}
-            <div style={{ display: 'flex', flexDirection: 'column', borderLeft: '2px solid #000', paddingLeft: '2rem', justifyContent: 'space-between' }}>
+            <div className="trending-list" style={{ display: 'flex', flexDirection: 'column', borderLeft: '2px solid #000', paddingLeft: '2rem', justifyContent: 'space-between' }}>
                <div style={{ display: 'grid', gridTemplateColumns: 'min-content 1fr', gap: '2rem 1.2rem', alignItems: 'center' }}>
                  {/* Item 1 */}
                  <span className="text-serif" style={{ fontSize: '3.5rem', lineHeight: '0.8', fontWeight: '800', color: '#000' }}>1</span>
@@ -98,7 +134,7 @@ export default function Home() {
               <h2 className="text-serif" style={{ fontSize: '2.5rem', fontWeight: '800', lineHeight: 1, margin: 0, letterSpacing: '-0.02em', color: '#000', whiteSpace: 'nowrap' }}>recent posts:</h2>
               <div style={{ height: '1px', backgroundColor: '#d4cfc3', flex: 1 }}></div>
             </div>
-            <nav className="flex items-center uppercase text-sans" style={{ gap: '2rem', fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.1em', marginLeft: '2rem' }}>
+            <nav className="flex items-center uppercase text-sans recent-nav" style={{ gap: '2rem', fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.1em', marginLeft: '2rem' }}>
               <span style={{ color: '#000' }}>BROWSE MORE IN:</span>
               <div className="flex" style={{ gap: '2rem', color: '#666' }}>
                 <span style={{ cursor: 'pointer', color: '#000' }}>AMAZON</span>
@@ -110,7 +146,7 @@ export default function Home() {
           </div>
 
           {/* Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1.5rem' }}>
+          <div className="recent-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '1.5rem' }}>
             {/* Post 1 */}
             <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
               <div style={{ width: '100%', paddingBottom: '125%', marginBottom: '1rem', backgroundColor: '#e5e5e5', position: 'relative', overflow: 'hidden' }}>
@@ -160,25 +196,25 @@ export default function Home() {
         </section>
 
         {/* Subscribe */}
-        <section style={{ backgroundColor: 'var(--color-accent)', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+        <section className="subscribe-section" style={{ backgroundColor: 'var(--color-accent)', padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
           <div>
             <h3 className="text-serif" style={{ fontSize: '1.5rem' }}>subscribe</h3>
             <p className="text-sans" style={{ fontSize: '0.8rem', color: 'var(--color-gray)' }}>Sign up for weekly style inspiration right to your inbox.</p>
           </div>
-          <div className="flex">
-            <input type="email" placeholder="Email Address" style={{ padding: '0.5rem 1rem', border: '1px solid var(--color-border)', outline: 'none' }} />
+          <div className="flex subscribe-input-group">
+            <input type="email" placeholder="Email Address" style={{ padding: '0.5rem 1rem', border: '1px solid var(--color-border)', outline: 'none', width: '100%', maxWidth: '250px' }} />
             <button className="uppercase text-sans" style={{ backgroundColor: '#cc8e8e', color: 'white', border: 'none', padding: '0.5rem 1.5rem', cursor: 'pointer', fontSize: '0.8rem' }}>Subscribe</button>
           </div>
         </section>
 
         {/* Shop by Trending Videos */}
         <section>
-          <div className="flex gap-sm" style={{ backgroundColor: 'var(--color-accent)', padding: '0.5rem' }}>
-            <div style={{ flex: '0.8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="flex gap-sm shop-videos-row" style={{ backgroundColor: 'var(--color-accent)', padding: '0.5rem' }}>
+            <div className="shop-videos-item" style={{ flex: '0.8', display: 'flex', alignItems: 'center', justifyItems: 'center', alignContent: 'center', justifyContent: 'center', position: 'sticky', left: 0, zIndex: 0, backgroundColor: 'var(--color-accent)' }}>
                <h2 className="text-serif text-center" style={{ fontSize: '1.5rem', color: 'var(--color-gray)' }}>SHOP<br/>MY<br/>VIDEOS<br/><span style={{fontSize:'1rem'}}>→</span></h2>
             </div>
             {[1, 2, 3, 4].map(i => (
-              <div key={i} style={{ flex: '1', position: 'relative' }}>
+              <div key={i} className="shop-videos-item" style={{ flex: '1', position: 'relative', zIndex: 5, backgroundColor: '#fff' }}>
                 <img src={`https://images.unsplash.com/photo-1516762689617-e1cffcef479d?auto=format&fit=crop&q=80&w=200&h=300&sig=${i}`} alt="Video" className="w-full object-cover" style={{ height: '250px' }} />
                 <button style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'white', border: 'none', padding: '0.3rem 0.8rem', fontSize: '0.6rem', cursor: 'pointer', fontWeight: 'bold' }}>SHOP NOW</button>
               </div>

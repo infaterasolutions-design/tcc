@@ -128,11 +128,18 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         .filter-tabs::-webkit-scrollbar {
           display: none;
         }
+        @media (max-width: 900px) {
+          .cat-hero { flex-direction: column !important; align-items: flex-start !important; padding: 2rem !important; }
+          .cat-hero h1 { fontSize: 2.5rem !important; }
+          .cat-featured { grid-template-columns: 1fr !important; }
+          .cat-featured-text { padding: 1.5rem !important; }
+          .ghost-text { font-size: 8rem !important; right: -1rem !important; }
+        }
       `}</style>
 
       {/* SECTION 1 - CATEGORY HERO BANNER */}
       <div style={{ backgroundColor: config.accentColor, position: 'relative', overflow: 'hidden', minHeight: '200px' }}>
-        <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '3rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+        <div className="cat-hero" style={{ maxWidth: '1240px', margin: '0 auto', padding: '3rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
           
           <div style={{ flex: 1, maxWidth: '560px', position: 'relative', zIndex: 10 }}>
             {/* Row 1: Breadcrumb */}
@@ -160,7 +167,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           </div>
 
           {/* Decorative ghost text */}
-          <div className="text-script" style={{ position: 'absolute', right: '-2rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', userSelect: 'none', zIndex: 0, fontSize: '15rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>
+          <div className="text-script ghost-text" style={{ position: 'absolute', right: '-2rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', userSelect: 'none', zIndex: 0, fontSize: '15rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>
             {config.label.toLowerCase()}
           </div>
         </div>
@@ -211,10 +218,10 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       {/* SECTION 3 - FEATURED POST */}
       {featuredPost && activeTab === 'ALL' && (
         <div style={{ maxWidth: '1240px', margin: '2rem auto', padding: '0 2rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', border: '1px solid #e5dfd5', minHeight: '380px' }}>
+          <div className="cat-featured" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', border: '1px solid #e5dfd5', minHeight: '380px' }}>
             
             {/* Image side */}
-            <div style={{ position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', overflow: 'hidden', minHeight: '250px' }}>
               <Image 
                 src={featuredPost.imageUrl}
                 alt={featuredPost.title}
@@ -224,7 +231,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             </div>
             
             {/* Content side */}
-            <div style={{ padding: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div className="cat-featured-text" style={{ padding: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <span className="text-sans" style={{ fontSize: '0.6rem', fontWeight: 'bold', letterSpacing: '0.1em', color: '#888', textTransform: 'uppercase', marginBottom: '0.8rem' }}>
                 FEATURED POST
               </span>
