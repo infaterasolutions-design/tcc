@@ -5,7 +5,7 @@ export default function Home() {
     <div className="home-wrapper">
       <style>{`
         @media (max-width: 900px) {
-          .hero-section { flex-direction: column !important; }
+          .hero-section { flex-direction: column-reverse !important; }
           .hero-left { padding: 3rem 1.5rem !important; text-align: center; }
           .hero-left h1 { fontSize: 2.5rem !important; }
           .hero-right { padding: 2rem !important; }
@@ -43,11 +43,7 @@ export default function Home() {
         
         {/* Hero Section */}
         <section className="flex hero-section" style={{ minHeight: '550px' }}>
-          {/* Left Half (Image) */}
-          <div className="w-full flex items-center justify-center hero-right" style={{ backgroundColor: '#e5dfd5', padding: '4rem' }}>
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600" alt="Hero model" className="object-cover" style={{ width: '100%', maxWidth: '400px', height: 'auto' }} />
-          </div>
-          {/* Right Half (Text) */}
+          {/* Left Half (Text) */}
           <div className="w-full flex items-center justify-center hero-left" style={{ backgroundColor: '#faf9f6', padding: '3rem' }}>
             <div style={{ maxWidth: '480px' }}>
               <h1 className="text-serif" style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', fontWeight: '800', lineHeight: '1.05', marginBottom: '1.5rem', color: '#000', letterSpacing: '-1px' }}>
@@ -57,6 +53,10 @@ export default function Home() {
                 The Combo Closet is an inspired style, home, and beauty destination for those who prefer quality over quantity, subtle over obvious, and ease over complexity.
               </p>
             </div>
+          </div>
+          {/* Right Half (Image) */}
+          <div className="w-full flex items-center justify-center hero-right" style={{ backgroundColor: '#e5dfd5', padding: '4rem' }}>
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600" alt="Hero model" className="object-cover" style={{ width: '100%', maxWidth: '400px', height: 'auto' }} />
           </div>
         </section>
 
