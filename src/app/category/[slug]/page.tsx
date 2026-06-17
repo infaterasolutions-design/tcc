@@ -4,6 +4,7 @@ import React, { useState, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PostCard from '../../../components/PostCard';
+import ElsewhereSection from '../../../components/ElsewhereSection';
 
 const categoryConfig: Record<string, {
   label: string;
@@ -16,298 +17,333 @@ const categoryConfig: Record<string, {
     label: 'Fashion',
     description: 'Outfit ideas, style guides, seasonal trends, and the best fashion finds across every budget.',
     postCount: 142,
-    subtags: ['ALL', 'OUTFITS', 'STYLE TIPS', 'SEASONAL', 'TRENDING', 'SALE PICKS'],
+    subtags: ['ALL', 'sneakers', 'black leather jacket', 'dresses', 'jeans'],
     accentColor: '#e5dfd5',
   },
   'plus-size': {
     label: 'Plus Size',
     description: 'Fashion-forward picks, outfit inspiration, and style guides for every body and every occasion.',
     postCount: 87,
-    subtags: ['ALL', 'OUTFITS', 'JEANS', 'DRESSES', 'WORKWEAR', 'SWIMWEAR'],
+    subtags: ['ALL', 'dresses', 'jeans', 'workwear', 'swimwear'],
     accentColor: '#ede7dc',
   },
   'nails': {
     label: 'Nails',
     description: 'Nail art inspo, the best nail polishes, salon reviews, and at-home manicure tips.',
     postCount: 54,
-    subtags: ['ALL', 'NAIL ART', 'GEL NAILS', 'NAIL POLISH', 'TRENDS', 'DIY'],
+    subtags: ['ALL', 'nail art', 'gel nails', 'nail polish', 'trends'],
     accentColor: '#f0e8e8',
   },
   'hairstyle': {
     label: 'Hairstyle',
     description: 'Hair inspiration, tutorials, product reviews, and the best hairstyles for every hair type.',
     postCount: 63,
-    subtags: ['ALL', 'TUTORIALS', 'PRODUCTS', 'CUT & COLOR', 'NATURAL HAIR', 'UPDOS'],
+    subtags: ['ALL', 'tutorials', 'products', 'cut & color', 'updos'],
     accentColor: '#e8e4da',
   },
   'blogs': {
     label: 'Blogs',
     description: 'Personal stories, life updates, travel diaries, and everything happening behind the scenes.',
     postCount: 38,
-    subtags: ['ALL', 'PERSONAL', 'TRAVEL', 'LIFESTYLE', 'BEAUTY', 'REVIEWS'],
+    subtags: ['ALL', 'personal', 'travel', 'lifestyle', 'beauty'],
     accentColor: '#e5dfd5',
   },
 };
 
 const mockPostsData: Record<string, any[]> = {
   fashion: [
-    { title: "30 Best Summer Outfits for 2026", category: "OUTFITS", date: "JUN 9, 2026", readTime: "10 min", slug: "summer-outfits-2026", imageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=400" },
-    { title: "What I Wore: A Week of Easy Outfits", category: "FASHION", date: "JUN 5, 2026", readTime: "6 min", slug: "week-of-outfits", imageUrl: "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=400" },
-    { title: "How to Style Wide-Leg Trousers 5 Ways", category: "STYLE TIPS", date: "JUN 2, 2026", readTime: "7 min", slug: "wide-leg-trousers", imageUrl: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=400" },
-    { title: "The Perfect Casual Friday Formula", category: "FASHION", date: "MAY 30, 2026", readTime: "5 min", slug: "casual-friday", imageUrl: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=400" },
-    { title: "Fall Capsule Wardrobe: 10 Essential Pieces", category: "SEASONAL", date: "MAY 24, 2026", readTime: "9 min", slug: "fall-capsule", imageUrl: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=400" },
-    { title: "Maxi Dress Styling: 8 Ways to Wear It", category: "OUTFITS", date: "MAY 15, 2026", readTime: "6 min", slug: "maxi-dress", imageUrl: "https://images.unsplash.com/photo-1572804013427-4d7ca7268217?auto=format&fit=crop&q=80&w=400" },
-    { title: "The Linen Set Trend: How to Wear It Now", category: "TRENDING", date: "MAY 10, 2026", readTime: "5 min", slug: "linen-set-trend", imageUrl: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&q=80&w=400" },
-    { title: "Best Denim Picks for Every Body Type", category: "FASHION", date: "MAY 5, 2026", readTime: "8 min", slug: "best-denim", imageUrl: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=400" },
-    { title: "10 Outfit Ideas for Your Next Vacation", category: "FASHION", date: "APR 28, 2026", readTime: "7 min", slug: "vacation-outfits", imageUrl: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=400" },
+    { title: "The Best Summer Sandals of 2026: Designer, Mid-Range, and Budget", category: "sneakers", date: "06.01.26", readTime: "10 min", slug: "summer-sandals-2026", imageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600" },
+    { title: "What to Wear in Paris Summer 2025: Effortless French Girl Style", category: "dresses", date: "08.12.25", readTime: "6 min", slug: "paris-summer-style", imageUrl: "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=600" },
+    { title: "These are My Most-Used Handbags in My Closet", category: "black leather jacket", date: "MAY 2, 2026", readTime: "7 min", slug: "most-used-handbags", imageUrl: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=600" },
+    { title: "Suede Trench Coat Outfit: A Classic Layer for Effortless Style", category: "dresses", date: "03.16.26", readTime: "5 min", slug: "suede-trench-coat", imageUrl: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=400" },
+    { title: "How to Style a Cropped Trench Coat for a Polished Look", category: "black leather jacket", date: "02.23.26", readTime: "9 min", slug: "cropped-trench-coat", imageUrl: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=400" },
+    { title: "Winter Trench Coat Outfit: A Polished, Everyday Look", category: "dresses", date: "02.09.26", readTime: "6 min", slug: "winter-trench-outfit", imageUrl: "https://images.unsplash.com/photo-1572804013427-4d7ca7268217?auto=format&fit=crop&q=80&w=400" },
+    { title: "How to Style a Winter Coat With Sneakers | Polished Style", category: "sneakers", date: "02.03.26", readTime: "5 min", slug: "winter-coat-sneakers", imageUrl: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&q=80&w=400" },
+    { title: "How to Style White Jeans for a Polished Everyday Look", category: "jeans", date: "01.21.26", readTime: "8 min", slug: "white-jeans-style", imageUrl: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=400" },
+    { title: "Classic + Elevated: A High-Low Winter Outfit You’ll Love", category: "dresses", date: "01.19.26", readTime: "7 min", slug: "high-low-winter", imageUrl: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=400" },
+    { title: "Copy This Neutral Winter Outfit to Stay Warm and Chic", category: "dresses", date: "01.16.26", readTime: "7 min", slug: "neutral-winter-outfit", imageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=400" },
+    { title: "Your Ultimate Fall Capsule Wardrobe 2025: What to Buy", category: "dresses", date: "10.13.25", readTime: "7 min", slug: "fall-capsule-wardrobe", imageUrl: "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=400" },
+    { title: "What to Buy During the Shopbop Style Event", category: "dresses", date: "09.29.25", readTime: "7 min", slug: "shopbop-event", imageUrl: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=400" },
+    { title: "What to Wear to a Fall Wedding: Chic Wedding Guest", category: "dresses", date: "08.21.25", readTime: "7 min", slug: "fall-wedding-guest", imageUrl: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=400" },
   ],
-  'plus-size': [
-    { title: "Best Plus Size Summer Dresses 2026", category: "PLUS SIZE", date: "JUN 7, 2026", readTime: "8 min", slug: "plus-size-dresses", imageUrl: "https://images.unsplash.com/photo-1594938298603-c8148c4b3fde?auto=format&fit=crop&q=80&w=400" },
-    { title: "Plus Size Outfit Ideas for Every Occasion", category: "OUTFITS", date: "JUN 1, 2026", readTime: "7 min", slug: "plus-size-outfits", imageUrl: "https://images.unsplash.com/photo-1617019114583-affb34d1b3cd?auto=format&fit=crop&q=80&w=400" },
-    { title: "Best Jeans for Curves: 12 Tested Picks", category: "JEANS", date: "MAY 22, 2026", readTime: "9 min", slug: "plus-size-jeans", imageUrl: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=400" },
-    { title: "Swimwear Guide: Best Suits for Every Shape", category: "SWIMWEAR", date: "MAY 16, 2026", readTime: "6 min", slug: "plus-size-swimwear", imageUrl: "https://images.unsplash.com/photo-1509319117193-57bab727e09d?auto=format&fit=crop&q=80&w=400" },
-    { title: "Work Outfits That Actually Fit and Flatter", category: "WORKWEAR", date: "MAY 8, 2026", readTime: "7 min", slug: "plus-size-workwear", imageUrl: "https://images.unsplash.com/photo-1628151015968-3a4429e9ef04?auto=format&fit=crop&q=80&w=400" },
-    { title: "Affordable Plus Size Finds Under $50", category: "SALE PICKS", date: "APR 30, 2026", readTime: "5 min", slug: "plus-size-affordable", imageUrl: "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=400" },
-  ],
-  nails: [
-    { title: "Summer Nail Trends 2026: What's Hot", category: "TRENDS", date: "JUN 6, 2026", readTime: "5 min", slug: "summer-nails-2026", imageUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=400" },
-    { title: "Best Gel Nail Polishes for Long-Lasting Wear", category: "GEL NAILS", date: "MAY 29, 2026", readTime: "6 min", slug: "gel-nail-polishes", imageUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=400&sig=2" },
-    { title: "5 Nail Art Looks I'm Obsessed With", category: "NAIL ART", date: "MAY 20, 2026", readTime: "4 min", slug: "nail-art-looks", imageUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=400&sig=3" },
-    { title: "At-Home Manicure Tips That Actually Work", category: "DIY", date: "MAY 10, 2026", readTime: "7 min", slug: "at-home-manicure", imageUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=400&sig=4" },
-    { title: "Best Nail Polish Colors for Every Skin Tone", category: "NAIL POLISH", date: "APR 28, 2026", readTime: "6 min", slug: "nail-polish-skin-tone", imageUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=400&sig=5" },
-  ],
-  hairstyle: [
-    { title: "Best Hair Trends for Summer 2026", category: "TRENDS", date: "JUN 8, 2026", readTime: "6 min", slug: "hair-trends-2026", imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400" },
-    { title: "How to Get Beachy Waves at Home", category: "TUTORIALS", date: "JUN 1, 2026", readTime: "8 min", slug: "beachy-waves", imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400&sig=2" },
-    { title: "Best Dry Shampoos That Actually Work", category: "PRODUCTS", date: "MAY 25, 2026", readTime: "5 min", slug: "best-dry-shampoo", imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400&sig=3" },
-    { title: "10 Elegant Updo Ideas for Any Occasion", category: "UPDOS", date: "MAY 15, 2026", readTime: "7 min", slug: "updo-ideas", imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400&sig=4" },
-    { title: "Natural Hair Care Routine for Curly Hair", category: "NATURAL HAIR", date: "MAY 5, 2026", readTime: "9 min", slug: "curly-hair-routine", imageUrl: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400&sig=5" },
-  ],
-  blogs: [
-    { title: "What I Learned Styling on a Budget", category: "PERSONAL", date: "JUN 4, 2026", readTime: "5 min", slug: "styling-on-budget", imageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=400" },
-    { title: "My Spring Travel Diary: Paris Edition", category: "TRAVEL", date: "MAY 28, 2026", readTime: "10 min", slug: "paris-travel-diary", imageUrl: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=400" },
-    { title: "7 Luxurious Fragrances I Can't Stop Wearing", category: "BEAUTY", date: "MAY 20, 2026", readTime: "5 min", slug: "fragrances-2026", imageUrl: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400" },
-    { title: "Honest Review: The Amazon Finds Everyone's Buying", category: "REVIEWS", date: "MAY 10, 2026", readTime: "7 min", slug: "amazon-finds-review", imageUrl: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=400" },
-  ],
+  // Fallback data for other categories using same structure
 };
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   
   const [activeTab, setActiveTab] = useState('ALL');
-  const [visibleCount, setVisibleCount] = useState(9);
+  const [visibleCount, setVisibleCount] = useState(8);
 
   const config = categoryConfig[slug] ?? categoryConfig['fashion'];
+  // Fallback to fashion data if slug not explicitly mocked, to avoid empty arrays
   const allPosts = mockPostsData[slug] ?? mockPostsData['fashion'];
   
   const filteredPosts = activeTab === 'ALL' 
     ? allPosts 
-    : allPosts.filter((p: any) => p.category === activeTab);
+    : allPosts.filter((p: any) => p.category.toLowerCase() === activeTab.toLowerCase());
     
-  // Slice starting from 1 to skip the featured post
-  const visiblePosts = filteredPosts.slice(1, visibleCount);
-  const featuredPost = allPosts[0]; // Featured is always the first post of the category
+  const topPosts = filteredPosts.slice(0, 3);
+  const bottomPosts = filteredPosts.slice(3, 3 + visibleCount);
 
   return (
-    <div>
+    <div style={{ backgroundColor: '#fff', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <style>{`
-        .posts-grid {
+        /* Container padding */
+        .page-container {
+          width: 100%;
+          max-width: 1240px;
+          margin: 0 auto;
+          padding: 30px 20px 0;
+        }
+
+        /* Top 3 Grid */
+        .top-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 50px 30px;
+          margin-bottom: 50px;
+        }
+
+        .top-card {
+          position: relative;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .top-card-image {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 385 / 516;
+        }
+
+        .top-card-overlay {
+          position: relative;
+          background: #FFFFFF;
+          margin: -30px auto 0;
+          padding: 15px 20px;
+          z-index: 10;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+          width: calc(100% - 60px);
+        }
+
+        /* Middle Section: Title & Tags */
+        .middle-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 40px 0 60px;
+          width: 100%;
+        }
+
+        .script-title {
+          font-family: 'Georgia', serif;
+          font-style: italic;
+          font-size: clamp(4rem, 10vw, 144px);
+          line-height: 1;
+          color: #000;
+          text-align: center;
+          margin: 0 0 20px 0;
+        }
+
+        .filter-tags {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 30px;
+          width: 100%;
+        }
+
+        .filter-tag {
+          font-family: 'canada-type-gibson', sans-serif;
+          font-size: 10px;
+          line-height: 10px;
+          letter-spacing: 1.67px;
+          text-transform: uppercase;
+          color: #000;
+          cursor: pointer;
+          background: transparent;
+          border: none;
+          padding-bottom: 4px;
+        }
+
+        .filter-tag.active {
+          border-bottom: 2px solid #000;
+          font-weight: bold;
+        }
+
+        /* Bottom 4-Column Grid */
+        .bottom-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 1.5rem;
+          gap: 50px 20px;
+          margin-bottom: 60px;
+          width: 100%;
         }
-        @media (max-width: 900px) {
-          .posts-grid { grid-template-columns: repeat(2, 1fr); }
+
+        .bottom-card {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
         }
-        @media (max-width: 600px) {
-          .posts-grid { grid-template-columns: 1fr; }
+
+        .bottom-card-image {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 290 / 389;
+          margin-bottom: 15px;
         }
-        .post-card-img { transition: transform 0.4s ease; }
-        .post-card-img:hover { transform: scale(1.04); }
-        
-        .filter-tabs::-webkit-scrollbar {
-          display: none;
+
+        /* Load More */
+        .load-more-btn {
+          font-family: 'canada-type-gibson', sans-serif;
+          font-size: 12px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #605C5C;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          cursor: pointer;
+          margin: 0 auto 80px;
+          background: transparent;
+          border: none;
         }
-        @media (max-width: 900px) {
-          .cat-hero { flex-direction: column !important; align-items: flex-start !important; padding: 2rem !important; }
-          .cat-hero h1 { fontSize: 2.5rem !important; }
-          .cat-featured { grid-template-columns: 1fr !important; }
-          .cat-featured-text { padding: 1.5rem !important; }
-          .ghost-text { font-size: 8rem !important; right: -1rem !important; }
+
+        .load-more-line {
+          width: 75px;
+          height: 1px;
+          background-color: #605C5C;
+          position: relative;
+        }
+        .load-more-line::after {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: -3px;
+          width: 6px;
+          height: 6px;
+          border-top: 1px solid #605C5C;
+          border-right: 1px solid #605C5C;
+          transform: rotate(45deg);
+        }
+
+        /* Responsiveness */
+        @media (max-width: 1024px) {
+          .top-grid { grid-template-columns: repeat(2, 1fr); }
+          .bottom-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+          .top-grid { grid-template-columns: 1fr; }
+          .top-card-overlay { margin: -20px auto 0; width: calc(100% - 30px); padding: 15px; }
+          .bottom-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 500px) {
+          .bottom-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
-      {/* SECTION 1 - CATEGORY HERO BANNER */}
-      <div style={{ backgroundColor: config.accentColor, position: 'relative', overflow: 'hidden', minHeight: '200px' }}>
-        <div className="cat-hero" style={{ maxWidth: '1240px', margin: '0 auto', padding: '3rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
-          
-          <div style={{ flex: 1, maxWidth: '560px', position: 'relative', zIndex: 10 }}>
-            {/* Row 1: Breadcrumb */}
-            <span className="text-sans" style={{ fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#888' }}>
-              HOME / CATEGORY / {config.label}
-            </span>
-            
-            {/* Row 2: Category Title */}
-            <h1 className="text-serif" style={{ fontSize: '3.5rem', fontWeight: 800, margin: '1rem 0', color: '#000', lineHeight: 1 }}>
-              {config.label}
-            </h1>
-            
-            {/* Row 3: Horizontal rule */}
-            <div style={{ height: '1px', backgroundColor: '#d4cfc3', width: '100%', marginBottom: '1rem' }} />
-            
-            {/* Row 4: Description */}
-            <p className="text-sans" style={{ fontSize: '0.9rem', color: '#555', lineHeight: 1.6, margin: 0 }}>
-              {config.description}
-            </p>
-            
-            {/* Row 5: Post count badge */}
-            <div style={{ marginTop: '1.2rem', backgroundColor: '#fff', padding: '0.4rem 0.8rem', display: 'inline-block', fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              {config.postCount} POSTS
-            </div>
+      <div className="page-container">
+        
+        {/* TOP SECTION: 3 FEATURED POSTS */}
+        {topPosts.length > 0 && (
+          <div className="top-grid">
+            {topPosts.map((post: any, i: number) => (
+              <Link href={`/post/${post.slug}`} key={`top-${i}`} style={{ textDecoration: 'none' }}>
+                <div className="top-card group">
+                  <div className="top-card-image" style={{ overflow: 'hidden' }}>
+                    <Image 
+                      src={post.imageUrl} 
+                      alt={post.title} 
+                      fill 
+                      style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }} 
+                      className="group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="top-card-overlay">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                      <span style={{ fontSize: '9px', fontWeight: 900, fontFamily: 'sans-serif' }}>→</span>
+                      <span style={{ fontFamily: 'canada-type-gibson', fontSize: '9px', letterSpacing: '1.51px', color: '#000', textTransform: 'uppercase' }}>
+                        {post.date}
+                      </span>
+                    </div>
+                    <h2 className="text-serif" style={{ fontSize: '20px', lineHeight: '25px', letterSpacing: '0.17px', color: '#000', margin: 0 }}>
+                      {post.title}
+                    </h2>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
+        )}
 
-          {/* Decorative ghost text */}
-          <div className="text-script ghost-text" style={{ position: 'absolute', right: '-2rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', userSelect: 'none', zIndex: 0, fontSize: '15rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>
+        {/* MIDDLE SECTION: TITLE & TABS */}
+        <div className="middle-section">
+          <h1 className="script-title">
             {config.label.toLowerCase()}
-          </div>
-        </div>
-      </div>
-
-      {/* SECTION 2 - STICKY FILTER TABS */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 50, backgroundColor: '#faf9f6', borderBottom: '1px solid #d4cfc3' }}>
-        <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '60px' }}>
-          
-          {/* Scrollable tabs row */}
-          <div className="filter-tabs" style={{ display: 'flex', overflowX: 'auto', gap: 0, scrollbarWidth: 'none', height: '100%' }}>
+          </h1>
+          <div className="filter-tags">
             {config.subtags.map(tab => (
               <button 
                 key={tab}
+                className={`filter-tag ${activeTab === tab ? 'active' : ''}`}
                 onClick={() => setActiveTab(tab)}
-                className="text-sans"
-                style={{ 
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderBottom: activeTab === tab ? '2px solid #000' : '2px solid transparent',
-                  padding: '0 1.5rem',
-                  fontSize: '0.65rem',
-                  fontWeight: activeTab === tab ? 'bold' : 'normal',
-                  letterSpacing: '0.1em',
-                  color: activeTab === tab ? '#000' : '#888',
-                  cursor: 'pointer',
-                  height: '100%',
-                  whiteSpace: 'nowrap'
-                }}
               >
                 {tab}
               </button>
             ))}
           </div>
+        </div>
 
-          {/* Sort dropdown */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-            <span className="text-sans" style={{ fontSize: '0.6rem', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>SORT BY:</span>
-            <select className="text-sans" style={{ fontSize: '0.65rem', fontWeight: 'bold', border: 'none', backgroundColor: 'transparent', outline: 'none', cursor: 'pointer' }}>
-              <option>NEWEST</option>
-              <option>OLDEST</option>
-              <option>POPULAR</option>
-            </select>
+        {/* BOTTOM SECTION: 4 COLUMN GRID */}
+        {bottomPosts.length > 0 ? (
+          <div className="bottom-grid">
+            {bottomPosts.map((post: any, i: number) => (
+              <Link href={`/post/${post.slug}`} key={`bottom-${i}`} style={{ textDecoration: 'none' }}>
+                <div className="bottom-card group">
+                  <div className="bottom-card-image" style={{ overflow: 'hidden' }}>
+                    <Image 
+                      src={post.imageUrl} 
+                      alt={post.title} 
+                      fill 
+                      style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }} 
+                      className="group-hover:scale-105"
+                    />
+                  </div>
+                  <div>
+                    <span style={{ fontFamily: 'canada-type-gibson', fontSize: '9px', letterSpacing: '1.51px', color: '#605C5C', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                      {post.date}
+                    </span>
+                    <h2 className="text-serif" style={{ fontSize: '20px', lineHeight: '25px', letterSpacing: '0.17px', color: '#000', margin: 0 }}>
+                      {post.title}
+                    </h2>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
-        </div>
-      </div>
-
-      {/* SECTION 3 - FEATURED POST */}
-      {featuredPost && activeTab === 'ALL' && (
-        <div style={{ maxWidth: '1240px', margin: '2rem auto', padding: '0 2rem' }}>
-          <div className="cat-featured" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', border: '1px solid #e5dfd5', minHeight: '380px' }}>
-            
-            {/* Image side */}
-            <div style={{ position: 'relative', overflow: 'hidden', minHeight: '250px' }}>
-              <Image 
-                src={featuredPost.imageUrl}
-                alt={featuredPost.title}
-                fill
-                style={{ objectFit: 'cover' }}
-              />
-            </div>
-            
-            {/* Content side */}
-            <div className="cat-featured-text" style={{ padding: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <span className="text-sans" style={{ fontSize: '0.6rem', fontWeight: 'bold', letterSpacing: '0.1em', color: '#888', textTransform: 'uppercase', marginBottom: '0.8rem' }}>
-                FEATURED POST
-              </span>
-              <h2 className="text-serif" style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 800, lineHeight: 1.1, color: '#000', marginBottom: '1rem' }}>
-                {featuredPost.title}
-              </h2>
-              <p className="text-sans" style={{ fontSize: '0.8rem', lineHeight: 1.7, color: '#555', marginBottom: '1.5rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                This is a featured post offering an in-depth look into the latest trends and our top recommendations. Read more to explore the full styling guide and editor picks carefully curated for this season.
-              </p>
-              <span className="text-sans" style={{ fontSize: '0.6rem', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-                {featuredPost.date} · {featuredPost.readTime || '8 MIN READ'}
-              </span>
-              <div>
-                <Link href={`/post/${featuredPost.slug}`} style={{ display: 'inline-block', backgroundColor: '#000', color: '#fff', textDecoration: 'none', padding: '0.6rem 1.5rem', fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer' }}>
-                  READ THE POST →
-                </Link>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-      )}
-
-      {/* SECTION 4 - POSTS GRID */}
-      <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem 2rem' }}>
-        
-        {/* Section header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-          <h2 className="text-serif" style={{ fontSize: '2rem', fontWeight: 800, lineHeight: 1, margin: 0, letterSpacing: '-0.02em', color: '#000', whiteSpace: 'nowrap' }}>
-            posts:
-          </h2>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#d4cfc3' }} />
-          <span className="text-sans" style={{ fontSize: '0.6rem', color: '#888', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase', marginLeft: '1.5rem' }}>
-            SHOWING 1–{visiblePosts.length + (activeTab === 'ALL' ? 1 : 0)} OF {filteredPosts.length}
-          </span>
-        </div>
-
-        {/* Grid */}
-        <div className="posts-grid">
-          {visiblePosts.map((post: any, i: number) => (
-            <PostCard 
-              key={post.slug + i}
-              title={post.title}
-              category={post.category}
-              date={post.date}
-              imageUrl={post.imageUrl}
-              slug={post.slug}
-              readTime={post.readTime}
-            />
-          ))}
-        </div>
-        
-        {filteredPosts.length === 0 && (
-          <div style={{ padding: '4rem 0', textAlign: 'center' }}>
-            <p className="text-sans" style={{ color: '#888' }}>No posts found for this category.</p>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '40px 0 80px', color: '#888' }}>
+            No additional posts found.
           </div>
         )}
+
+        {/* LOAD MORE BUTTON */}
+        {bottomPosts.length + topPosts.length < filteredPosts.length && (
+          <button className="load-more-btn" onClick={() => setVisibleCount(prev => prev + 8)}>
+            LOAD MORE
+            <div className="load-more-line"></div>
+          </button>
+        )}
+
+        {/* Elsewhere Section */}
+        <ElsewhereSection />
+
       </div>
-
-      {/* SECTION 5 - LOAD MORE */}
-      {visibleCount < filteredPosts.length && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '3rem', marginBottom: '3rem' }}>
-          <div 
-            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-            onClick={() => setVisibleCount(prev => prev + 6)}
-          >
-            <span className="text-sans" style={{ fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.15em', color: '#000', textTransform: 'uppercase', marginRight: '1rem' }}>
-              LOAD MORE
-            </span>
-            <div style={{ position: 'relative', width: '80px', height: '1px', backgroundColor: '#d4cfc3' }}>
-              <div style={{ position: 'absolute', right: 0, top: '-4px', width: '8px', height: '8px', borderTop: '1px solid #d4cfc3', borderRight: '1px solid #d4cfc3', transform: 'rotate(45deg)' }} />
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
