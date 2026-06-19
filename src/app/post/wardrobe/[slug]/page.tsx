@@ -113,10 +113,44 @@ export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slu
         @media (max-width: 1024px) {
           .page-container {
             flex-direction: column;
+            padding: 2rem 1rem;
+            gap: 40px;
           }
           .sidebar-container {
             width: 100%;
-            margin-top: 3rem;
+            margin-top: 1rem;
+          }
+          .article-title {
+            font-size: 28px;
+          }
+          .article-intro {
+            font-size: 16px;
+            margin-bottom: 32px;
+          }
+          .article-body h2 {
+            font-size: 24px;
+            margin-top: 40px;
+          }
+          .article-body h3 {
+            font-size: 20px;
+            margin-top: 32px;
+          }
+          .article-body p,
+          .article-body ul li {
+            font-size: 16px;
+          }
+          .accent-box {
+            padding: 24px 16px;
+            margin: 32px 0;
+          }
+          .toc-box-content {
+            padding: 24px 24px 0;
+          }
+          .toc-header h2 {
+            font-size: 24px;
+          }
+          .toc-expand {
+            padding: 12px 24px;
           }
         }
 
@@ -229,8 +263,8 @@ export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slu
 
         .accent-box {
           background-color: var(--accent-bg);
-          padding: 48px 40px;
-          margin: 56px 0;
+          padding: 40px 24px;
+          margin: 48px 0;
         }
         
         .accent-box.bordered {
