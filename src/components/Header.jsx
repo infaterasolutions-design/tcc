@@ -46,6 +46,7 @@ export default function Header() {
         <nav className="desktop-nav flex gap-md text-sans uppercase" style={{ fontSize: '0.7rem', fontWeight: 'bold', letterSpacing: '0.05em', color: '#000' }}>
           <Link href="/category/fashion">fashion</Link>
           <Link href="/category/plus-size">plus size</Link>
+          <Link href="/category/wardrobe">wardrobe</Link>
           <Link href="/category/nails">nails</Link>
           <Link href="/category/hairstyle">hairstyle</Link>
           <Link href="/category/blogs">blogs</Link>
@@ -123,6 +124,7 @@ export default function Header() {
           <nav className="flex text-sans uppercase" style={{ flexDirection: 'column', gap: '1.5rem', fontSize: '1rem', fontWeight: 'bold', letterSpacing: '0.05em', color: '#000' }}>
             <Link href="/category/fashion" onClick={() => setIsOpen(false)}>fashion</Link>
             <Link href="/category/plus-size" onClick={() => setIsOpen(false)}>plus size</Link>
+            <Link href="/category/wardrobe" onClick={() => setIsOpen(false)}>wardrobe</Link>
             <Link href="/category/nails" onClick={() => setIsOpen(false)}>nails</Link>
             <Link href="/category/hairstyle" onClick={() => setIsOpen(false)}>hairstyle</Link>
             <Link href="/category/blogs" onClick={() => setIsOpen(false)}>blogs</Link>

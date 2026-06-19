@@ -48,6 +48,13 @@ const categoryConfig: Record<string, {
     subtags: ['ALL', 'personal', 'travel', 'lifestyle', 'beauty'],
     accentColor: '#e5dfd5',
   },
+  'wardrobe': {
+    label: 'Wardrobe',
+    description: 'Capsule wardrobes, styling tips, closet organization, and essential basics.',
+    postCount: 112,
+    subtags: ['ALL', 'capsule', 'basics', 'organization', 'styling'],
+    accentColor: '#e8e4da',
+  },
 };
 
 const mockPostsData: Record<string, any[]> = {
@@ -64,7 +71,15 @@ const mockPostsData: Record<string, any[]> = {
     { title: "Copy This Neutral Winter Outfit to Stay Warm and Chic", category: "dresses", date: "01.16.26", readTime: "7 min", slug: "neutral-winter-outfit", imageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=400" },
     { title: "Your Ultimate Fall Capsule Wardrobe 2025: What to Buy", category: "dresses", date: "10.13.25", readTime: "7 min", slug: "fall-capsule-wardrobe", imageUrl: "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=400" },
     { title: "What to Buy During the Shopbop Style Event", category: "dresses", date: "09.29.25", readTime: "7 min", slug: "shopbop-event", imageUrl: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=400" },
-    { title: "What to Wear to a Fall Wedding: Chic Wedding Guest", category: "dresses", date: "08.21.25", readTime: "7 min", slug: "fall-wedding-guest", imageUrl: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=400" },
+    { title: "Honest Review: The Amazon Finds Everyone's Buying", category: "REVIEWS", date: "MAY 10, 2026", readTime: "7 min", slug: "amazon-finds-review", imageUrl: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=400" },
+  ],
+  wardrobe: [
+    { title: "Building a Neutral Capsule Wardrobe", category: "capsule", date: "JUN 15, 2026", readTime: "8 min", slug: "neutral-capsule-wardrobe", imageUrl: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=400" },
+    { title: "5 Basic T-Shirts You Need in Your Closet", category: "basics", date: "JUN 10, 2026", readTime: "5 min", slug: "basic-tshirts", imageUrl: "https://images.unsplash.com/photo-1572804013427-4d7ca7268217?auto=format&fit=crop&q=80&w=400" },
+    { title: "How to Organize Your Closet for Summer", category: "organization", date: "JUN 2, 2026", readTime: "7 min", slug: "summer-closet-organization", imageUrl: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=400" },
+    { title: "Styling the Same Jeans 5 Ways", category: "styling", date: "MAY 25, 2026", readTime: "6 min", slug: "styling-jeans-5-ways", imageUrl: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=400" },
+    { title: "Investment Pieces Worth the Splurge", category: "capsule", date: "MAY 18, 2026", readTime: "9 min", slug: "investment-pieces", imageUrl: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=400" },
+    { title: "The Ultimate Guide to Closet Purging", category: "organization", date: "MAY 10, 2026", readTime: "8 min", slug: "closet-purging-guide", imageUrl: "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&q=80&w=400" },
   ],
   // Fallback data for other categories using same structure
 };
@@ -253,7 +268,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         {topPosts.length > 0 && (
           <div className="top-grid">
             {topPosts.map((post: any, i: number) => (
-              <Link href={`/post/${post.slug}`} key={`top-${i}`} style={{ textDecoration: 'none' }}>
+              <Link href={slug === 'wardrobe' ? `/post/wardrobe/${post.slug}` : `/post/${post.slug}`} key={`top-${i}`} style={{ textDecoration: 'none' }}>
                 <div className="top-card group">
                   <div className="top-card-image" style={{ overflow: 'hidden' }}>
                     <Image 
@@ -303,7 +318,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         {bottomPosts.length > 0 ? (
           <div className="bottom-grid">
             {bottomPosts.map((post: any, i: number) => (
-              <Link href={`/post/${post.slug}`} key={`bottom-${i}`} style={{ textDecoration: 'none' }}>
+              <Link href={slug === 'wardrobe' ? `/post/wardrobe/${post.slug}` : `/post/${post.slug}`} key={`bottom-${i}`} style={{ textDecoration: 'none' }}>
                 <div className="bottom-card group">
                   <div className="bottom-card-image" style={{ overflow: 'hidden' }}>
                     <Image 
