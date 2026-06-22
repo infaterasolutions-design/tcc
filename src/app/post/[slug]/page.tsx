@@ -12,6 +12,68 @@ function formatSlugToTitle(slug: string) {
     .join(' ');
 }
 
+const ShopThePostSlider = ({ products }: { products: any[] }) => {
+  const [items] = React.useState(() => products.map((p, i) => ({ ...p, _id: i })));
+  const [currentIndex, setCurrentIndex] = React.useState(items.length);
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+
+  const handleNext = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev - 1);
+  };
+
+  const handleTransitionEnd = () => {
+    setIsTransitioning(false);
+    if (currentIndex >= items.length * 2) {
+      setCurrentIndex(currentIndex - items.length);
+    } else if (currentIndex <= items.length - 1) {
+      setCurrentIndex(currentIndex + items.length);
+    }
+  };
+
+  if (!products || products.length === 0) return null;
+
+  const itemWidth = 120; // 100px width + 20px gap
+  const trackItems = [...items, ...items, ...items];
+
+  return (
+    <div className="shop-post-container">
+      <div className="shop-post-wrapper">
+        <button className="shop-post-btn" onClick={handlePrev}>‹</button>
+        <div className="shop-post-viewport" style={{ overflow: 'hidden', flex: 1, height: '120px' }}>
+          <div 
+            className="shop-post-track"
+            onTransitionEnd={handleTransitionEnd}
+            style={{ 
+              display: 'flex', 
+              gap: '20px', 
+              height: '100%',
+              alignItems: 'center',
+              width: 'max-content',
+              transition: isTransitioning ? 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+              transform: `translateX(-${currentIndex * itemWidth}px)`
+            }}
+          >
+            {trackItems.map((prod, i) => (
+              <Link key={`${prod._id}-${i}`} href={prod.url} className="shop-post-item">
+                <img src={prod.image} alt={prod.alt || ''} />
+              </Link>
+            ))}
+          </div>
+        </div>
+        <button className="shop-post-btn" onClick={handleNext}>›</button>
+      </div>
+    </div>
+  );
+};
+
 export default function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const title = formatSlugToTitle(slug);
@@ -58,6 +120,64 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
         @media (max-width: 600px) {
           .related-grid { grid-template-columns: 1fr; }
         }
+
+        .shop-post-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 48px 0;
+          width: 100%;
+        }
+        .shop-post-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          max-width: 600px;
+          width: 100%;
+          height: 120px;
+          position: relative;
+        }
+        .shop-post-btn {
+          width: 25px;
+          height: 120px;
+          background-color: #FFFFFF;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+          font-size: 24px;
+          color: #888;
+        }
+        .shop-post-btn:hover {
+          color: #000;
+        }
+        .shop-post-item {
+          display: block;
+          flex-shrink: 0;
+          width: 100px;
+          height: 100px;
+          background-color: #f5f5f5;
+          transition: transform 0.2s;
+        }
+        .shop-post-item:hover {
+          transform: translateY(-2px);
+        }
+        .shop-post-item img {
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+        }
+
+        .capsule-lookbook-container {
+          width: 100%;
+          margin: 4rem 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background: #fff;
+        }
       `}</style>
 
       {/* ARTICLE HEADER */}
@@ -103,6 +223,18 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
         <p>
           We've all experienced that moment of staring into a full closet and feeling like we have absolutely nothing to wear. The secret to effortless dressing lies in investing in versatile, high-quality basics that can be mixed and matched. Whether you're curating a capsule collection or just looking to refresh your look, these selections are designed to carry you through the season with ease.
         </p>
+
+        {/* CAPSULE WARDROBE LOOKBOOK FIGURE */}
+        <div className="capsule-lookbook-container">
+          <Image 
+            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1200&h=2400" 
+            alt="2026 Classic Summer Capsule Wardrobe"
+            width={1200}
+            height={2400}
+            style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '1/2', objectFit: 'cover' }}
+            priority={false}
+          />
+        </div>
 
         <h2>What Makes a Great Investment Piece?</h2>
         <p>
@@ -155,6 +287,15 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
         <p>
           Remember, fashion is meant to be fun. Use these guidelines as a starting point, but don't be afraid to experiment with textures, layering, and accessories to make the look uniquely yours.
         </p>
+
+        <h2>Shop the Post</h2>
+        <ShopThePostSlider products={[
+          { url: '#', image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 1' },
+          { url: '#', image: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=100&q=80', alt: 'Bag 1' },
+          { url: '#', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 2' },
+          { url: '#', image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=100&q=80', alt: 'Hat' },
+          { url: '#', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 3' }
+        ]} />
 
         {/* Share / Tags */}
         <div style={{ marginTop: '4rem', paddingBottom: '2rem', borderBottom: '1px solid #d4cfc3', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

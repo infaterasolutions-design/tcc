@@ -268,7 +268,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         {topPosts.length > 0 && (
           <div className="top-grid">
             {topPosts.map((post: any, i: number) => (
-              <Link href={slug === 'wardrobe' ? `/post/wardrobe/${post.slug}` : `/post/${post.slug}`} key={`top-${i}`} style={{ textDecoration: 'none' }}>
+              <Link href={slug === 'wardrobe' ? `/post/${post.slug}` : `/post/wardrobe/${post.slug}`} key={`top-${i}`} style={{ textDecoration: 'none' }}>
                 <div className="top-card group">
                   <div className="top-card-image" style={{ overflow: 'hidden' }}>
                     <Image 
@@ -318,7 +318,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         {bottomPosts.length > 0 ? (
           <div className="bottom-grid">
             {bottomPosts.map((post: any, i: number) => (
-              <Link href={slug === 'wardrobe' ? `/post/wardrobe/${post.slug}` : `/post/${post.slug}`} key={`bottom-${i}`} style={{ textDecoration: 'none' }}>
+              <Link href={slug === 'wardrobe' ? `/post/${post.slug}` : `/post/wardrobe/${post.slug}`} key={`bottom-${i}`} style={{ textDecoration: 'none' }}>
                 <div className="bottom-card group">
                   <div className="bottom-card-image" style={{ overflow: 'hidden' }}>
                     <Image 

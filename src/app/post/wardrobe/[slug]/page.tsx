@@ -4,7 +4,7 @@ import React, { use } from 'react';
 import Link from 'next/link';
 
 interface ArticleSection {
-  type: 'h2' | 'h3' | 'p' | 'ul' | 'tip' | 'pullquote' | 'what-works' | 'image' | 'form' | 'accent-box';
+  type: 'h2' | 'h3' | 'p' | 'ul' | 'tip' | 'pullquote' | 'what-works' | 'image' | 'form' | 'accent-box' | 'shop-the-post';
   id?: string;
   text?: string;
   heading?: string;
@@ -13,6 +13,7 @@ interface ArticleSection {
   alt?: string;
   caption?: string;
   bordered?: boolean;
+  products?: { url: string; image: string; alt?: string }[];
 }
 interface RelatedPost {
   slug: string;
@@ -51,6 +52,13 @@ const mockPost: Post = {
     { type: 'p', text: 'This guide will show you how to apply the <a href="#">SOS Method</a> in every room of your home—and more importantly, keep it that way. Check out the <a href="#">SOS Declutter Method Guide</a> for a deeper dive and the questions I find most helpful.' },
     { type: 'p', text: 'If you’re looking for a clear place to start, I put together a <a href="#">room-by-room declutter checklist</a> that walks you through exactly what to let go of.' },
     { type: 'h2', text: 'Choose a decluttering timeline that fits your life' },
+    { type: 'shop-the-post', products: [
+      { url: '#', image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 1' },
+      { url: '#', image: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=100&q=80', alt: 'Bag 1' },
+      { url: '#', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 2' },
+      { url: '#', image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=100&q=80', alt: 'Hat' },
+      { url: '#', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 3' }
+    ]},
     { type: 'p', text: 'Every home (and season) looks a little different. Don’t feel pressured to finish your entire house in a weekend if you have kids running around.' },
     { type: 'h3', text: 'If you live in an apartment or a smaller home' },
     { type: 'ul', items: ['Three-month plan: Focus on one area every 1-2 weeks.', 'Two-month plan: Declutter one room or category per week.', 'One-month plan: Commit 20 minutes each day to a small area.'] },
@@ -74,6 +82,68 @@ const mockPost: Post = {
 };
 
 const getPost = (slug: string): Post => ({ ...mockPost, slug });
+
+const ShopThePostSlider = ({ products }: { products: any[] }) => {
+  const [items] = React.useState(() => products.map((p, i) => ({ ...p, _id: i })));
+  const [currentIndex, setCurrentIndex] = React.useState(items.length);
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+
+  const handleNext = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev - 1);
+  };
+
+  const handleTransitionEnd = () => {
+    setIsTransitioning(false);
+    if (currentIndex >= items.length * 2) {
+      setCurrentIndex(currentIndex - items.length);
+    } else if (currentIndex <= items.length - 1) {
+      setCurrentIndex(currentIndex + items.length);
+    }
+  };
+
+  if (!products || products.length === 0) return null;
+
+  const itemWidth = 120; // 100px width + 20px gap
+  const trackItems = [...items, ...items, ...items];
+
+  return (
+    <div className="shop-post-container">
+      <div className="shop-post-wrapper">
+        <button className="shop-post-btn" onClick={handlePrev}>‹</button>
+        <div className="shop-post-viewport" style={{ overflow: 'hidden', flex: 1, height: '120px' }}>
+          <div 
+            className="shop-post-track"
+            onTransitionEnd={handleTransitionEnd}
+            style={{ 
+              display: 'flex', 
+              gap: '20px', 
+              height: '100%',
+              alignItems: 'center',
+              width: 'max-content',
+              transition: isTransitioning ? 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+              transform: `translateX(-${currentIndex * itemWidth}px)`
+            }}
+          >
+            {trackItems.map((prod, i) => (
+              <Link key={`${prod._id}-${i}`} href={prod.url} className="shop-post-item">
+                <img src={prod.image} alt={prod.alt || ''} />
+              </Link>
+            ))}
+          </div>
+        </div>
+        <button className="shop-post-btn" onClick={handleNext}>›</button>
+      </div>
+    </div>
+  );
+};
 
 export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -324,6 +394,69 @@ export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slu
           text-transform: uppercase;
           color: #131313;
         }
+
+        .shop-post-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 48px 0;
+          width: 100%;
+        }
+        .shop-post-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          max-width: 600px;
+          width: 100%;
+          height: 120px;
+          position: relative;
+        }
+        .shop-post-btn {
+          width: 25px;
+          height: 120px;
+          background-color: #FFFFFF;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+          font-size: 24px;
+          color: #888;
+        }
+        .shop-post-btn:hover {
+          color: #000;
+        }
+        .shop-post-items {
+          display: flex;
+          gap: 20px;
+          overflow-x: auto;
+          scroll-behavior: smooth;
+          scrollbar-width: none;
+          flex: 1;
+          height: 120px;
+          align-items: center;
+          justify-content: center;
+        }
+        .shop-post-items::-webkit-scrollbar {
+          display: none;
+        }
+        .shop-post-item {
+          display: block;
+          flex-shrink: 0;
+          width: 100px;
+          height: 100px;
+          background-color: #f5f5f5;
+          transition: transform 0.2s;
+        }
+        .shop-post-item:hover {
+          transform: translateY(-2px);
+        }
+        .shop-post-item img {
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+        }
       `}</style>
 
       <div className="page-container">
@@ -396,6 +529,8 @@ export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slu
                     </ul>
                   </div>
                 );
+              case 'shop-the-post':
+                return <ShopThePostSlider key={idx} products={section.products || []} />;
               default:
                 return null;
             }
