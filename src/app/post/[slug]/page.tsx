@@ -1,82 +1,26 @@
-'use client';
-
-import React, { use } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PostCard from '../../../components/PostCard';
+import { ShopThePostSlider } from '../../../components/ShopThePostSlider';
+import { supabase } from '../../../lib/supabase';
+import { notFound } from 'next/navigation';
 
-function formatSlugToTitle(slug: string) {
-  return slug
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
+export const revalidate = 60; // Revalidate cache every 60 seconds
 
-const ShopThePostSlider = ({ products }: { products: any[] }) => {
-  const [items] = React.useState(() => products.map((p, i) => ({ ...p, _id: i })));
-  const [currentIndex, setCurrentIndex] = React.useState(items.length);
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-  const handleNext = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex(prev => prev + 1);
-  };
+  // Fetch post from Supabase
+  const { data: post, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('slug', slug)
+    .single();
 
-  const handlePrev = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex(prev => prev - 1);
-  };
-
-  const handleTransitionEnd = () => {
-    setIsTransitioning(false);
-    if (currentIndex >= items.length * 2) {
-      setCurrentIndex(currentIndex - items.length);
-    } else if (currentIndex <= items.length - 1) {
-      setCurrentIndex(currentIndex + items.length);
-    }
-  };
-
-  if (!products || products.length === 0) return null;
-
-  const itemWidth = 120; // 100px width + 20px gap
-  const trackItems = [...items, ...items, ...items];
-
-  return (
-    <div className="shop-post-container">
-      <div className="shop-post-wrapper">
-        <button className="shop-post-btn" onClick={handlePrev}>‹</button>
-        <div className="shop-post-viewport" style={{ overflow: 'hidden', flex: 1, height: '120px' }}>
-          <div 
-            className="shop-post-track"
-            onTransitionEnd={handleTransitionEnd}
-            style={{ 
-              display: 'flex', 
-              gap: '20px', 
-              height: '100%',
-              alignItems: 'center',
-              width: 'max-content',
-              transition: isTransitioning ? 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
-              transform: `translateX(-${currentIndex * itemWidth}px)`
-            }}
-          >
-            {trackItems.map((prod, i) => (
-              <Link key={`${prod._id}-${i}`} href={prod.url} className="shop-post-item">
-                <img src={prod.image} alt={prod.alt || ''} />
-              </Link>
-            ))}
-          </div>
-        </div>
-        <button className="shop-post-btn" onClick={handleNext}>›</button>
-      </div>
-    </div>
-  );
-};
-
-export default function PostPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const title = formatSlugToTitle(slug);
+  if (error || !post) {
+    return notFound();
+  }
 
   return (
     <div style={{ backgroundColor: '#faf9f6', minHeight: '100vh', paddingBottom: '4rem' }}>
@@ -121,6 +65,14 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
           .related-grid { grid-template-columns: 1fr; }
         }
 
+        .capsule-lookbook-container {
+          width: 100%;
+          margin: 4rem 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background: #fff;
+        }
         .shop-post-container {
           display: flex;
           flex-direction: column;
@@ -169,36 +121,27 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
           width: 100%;
           object-fit: cover;
         }
-
-        .capsule-lookbook-container {
-          width: 100%;
-          margin: 4rem 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          background: #fff;
-        }
       `}</style>
 
       {/* ARTICLE HEADER */}
       <header style={{ maxWidth: '1240px', margin: '0 auto', padding: '4rem 2rem 2rem' }}>
         {/* Breadcrumb */}
         <div className="text-sans" style={{ fontSize: '0.65rem', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#888', marginBottom: '1.5rem', textAlign: 'center' }}>
-          <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>HOME</Link> / POST / {title.toUpperCase()}
+          <Link href="/" style={{ color: '#888', textDecoration: 'none' }}>HOME</Link> / POST / {post.title.toUpperCase()}
         </div>
 
         {/* Title */}
         <h1 className="text-serif" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 800, lineHeight: 1.1, color: '#000', textAlign: 'center', marginBottom: '1.5rem' }}>
-          {title}
+          {post.title}
         </h1>
 
         {/* Meta Info */}
         <div className="text-sans" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', fontSize: '0.75rem', color: '#666', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-          <span>By The Combo Closet</span>
+          <span>By {post.author}</span>
           <span>·</span>
-          <span>JUN 10, 2026</span>
+          <span>{post.date}</span>
           <span>·</span>
-          <span>8 MIN READ</span>
+          <span>{post.read_time}</span>
         </div>
       </header>
 
@@ -206,8 +149,8 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
       <div style={{ maxWidth: '1240px', margin: '0 auto 4rem', padding: '0 2rem' }}>
         <div style={{ position: 'relative', width: '100%', paddingBottom: '55%', backgroundColor: '#e5e5e5' }}>
           <Image 
-            src={`https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=1200&sig=${slug.length}`}
-            alt={title}
+            src={post.hero_image || `https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=1200&sig=${slug.length}`}
+            alt={post.title}
             fill
             style={{ objectFit: 'cover' }}
             priority
@@ -217,85 +160,75 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
 
       {/* ARTICLE BODY */}
       <article className="article-content" style={{ maxWidth: '1240px', margin: '0 auto', padding: '0 2rem' }}>
-        <p>
-          Welcome to another deep dive into our favorite seasonal staples. Finding the right balance between comfort and style can sometimes feel like a daunting task, but it doesn't have to be. Today, we're breaking down the essential pieces that will elevate your everyday wardrobe.
-        </p>
-        <p>
-          We've all experienced that moment of staring into a full closet and feeling like we have absolutely nothing to wear. The secret to effortless dressing lies in investing in versatile, high-quality basics that can be mixed and matched. Whether you're curating a capsule collection or just looking to refresh your look, these selections are designed to carry you through the season with ease.
-        </p>
+        <p>{post.intro}</p>
 
-        {/* CAPSULE WARDROBE LOOKBOOK FIGURE */}
-        <div className="capsule-lookbook-container">
-          <Image 
-            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=1200&h=2400" 
-            alt="2026 Classic Summer Capsule Wardrobe"
-            width={1200}
-            height={2400}
-            style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '1/2', objectFit: 'cover' }}
-            priority={false}
-          />
-        </div>
-
-        <h2>What Makes a Great Investment Piece?</h2>
-        <p>
-          Before we get to the editor's top picks, let's talk about what actually makes a piece worth buying. The most important element is obviously comfort. If a garment doesn't feel good and you're unable to wear it all day, it will likely end up collecting dust at the back of your closet.
-        </p>
-        <p>
-          Next is versatility. Look for neutral tones like black, white, tan, and soft beige, which serve as an excellent foundation. Add in pops of seasonal colors like rich reds or deep greens to keep things interesting. A timeless silhouette ensures your outfit remains modern without feeling overly trendy or dated.
-        </p>
-
-        {/* PRODUCT GRID / EDITOR PICKS */}
-        <h2>Editor's Top Picks</h2>
-        <p>
-          Here are three of our current absolute favorites that perfectly blend high-end aesthetics with everyday wearability. We've vetted these carefully to ensure they meet our standards for quality and style.
-        </p>
-        
-        <div className="product-grid">
-          {/* Product 1 */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ position: 'relative', paddingBottom: '120%', marginBottom: '1rem', backgroundColor: '#e8e4da' }}>
-              <Image src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=400" alt="Product 1" fill style={{ objectFit: 'cover' }} />
-            </div>
-            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.2rem' }}>The Classic Essential</h3>
-            <span className="text-sans" style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.8rem' }}>An absolute wardrobe staple.</span>
-            <span className="text-sans" style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>$120.00</span>
-          </div>
-          {/* Product 2 */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ position: 'relative', paddingBottom: '120%', marginBottom: '1rem', backgroundColor: '#e5dfd5' }}>
-              <Image src="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&q=80&w=400" alt="Product 2" fill style={{ objectFit: 'cover' }} />
-            </div>
-            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.2rem' }}>Elevated Everyday</h3>
-            <span className="text-sans" style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.8rem' }}>For dressing up or down.</span>
-            <span className="text-sans" style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>$245.00</span>
-          </div>
-          {/* Product 3 */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ position: 'relative', paddingBottom: '120%', marginBottom: '1rem', backgroundColor: '#ede7dc' }}>
-              <Image src="https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=400" alt="Product 3" fill style={{ objectFit: 'cover' }} />
-            </div>
-            <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.2rem' }}>The Statement Maker</h3>
-            <span className="text-sans" style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.8rem' }}>A bold addition to any look.</span>
-            <span className="text-sans" style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>$85.00</span>
-          </div>
-        </div>
-
-        <h2>How to Style It</h2>
-        <p>
-          When styling these pieces, the key is balance. If you're wearing something voluminous on the bottom, keep the top more fitted, and vice versa. Accessories can completely transform the look—swapping casual flats for an elevated heel takes the outfit from day to night effortlessly.
-        </p>
-        <p>
-          Remember, fashion is meant to be fun. Use these guidelines as a starting point, but don't be afraid to experiment with textures, layering, and accessories to make the look uniquely yours.
-        </p>
-
-        <h2>Shop the Post</h2>
-        <ShopThePostSlider products={[
-          { url: '#', image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 1' },
-          { url: '#', image: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=100&q=80', alt: 'Bag 1' },
-          { url: '#', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 2' },
-          { url: '#', image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=100&q=80', alt: 'Hat' },
-          { url: '#', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 3' }
-        ]} />
+        {(post.sections || []).map((section: any, idx: number) => {
+          switch (section.type) {
+            case 'h2':
+              return <h2 key={idx} id={section.id}>{section.text}</h2>;
+            case 'h3':
+              return <h3 key={idx}>{section.text}</h3>;
+            case 'p':
+              return <p key={idx} dangerouslySetInnerHTML={{ __html: section.text || '' }} />;
+            case 'ul':
+              return (
+                <ul key={idx} style={{ listStyleType: 'disc', paddingLeft: '20px', marginBottom: '2rem' }}>
+                  {section.items?.map((item: string, i: number) => (
+                    <li key={i} style={{ marginBottom: '0.5rem' }} dangerouslySetInnerHTML={{ __html: item }} />
+                  ))}
+                </ul>
+              );
+            case 'accent-box':
+              return (
+                <div key={idx} style={{ backgroundColor: '#FAF6EE', padding: '2rem', margin: '2rem 0', border: section.bordered ? '2px solid #EC9277' : 'none' }}>
+                  <h2 style={{ marginTop: 0 }}>{section.heading}</h2>
+                  <p>{section.text}</p>
+                  <ul style={{ paddingLeft: '20px' }}>
+                    {section.items?.map((item: string, i: number) => (
+                      <li key={i} style={{ marginBottom: '0.5rem' }} dangerouslySetInnerHTML={{ __html: item }} />
+                    ))}
+                  </ul>
+                </div>
+              );
+            case 'shop-the-post':
+              return (
+                <div key={idx}>
+                  <h2>Shop the Post</h2>
+                  <ShopThePostSlider products={section.products || []} />
+                </div>
+              );
+            case 'image-lookbook':
+              return (
+                <div key={idx} className="capsule-lookbook-container">
+                  <Image 
+                    src={section.src} 
+                    alt={section.alt || "Lookbook image"}
+                    width={1200}
+                    height={2400}
+                    style={{ width: '100%', height: 'auto', display: 'block', aspectRatio: '1/2', objectFit: 'cover' }}
+                    priority={false}
+                  />
+                </div>
+              );
+            case 'product-grid':
+              return (
+                <div key={idx} className="product-grid">
+                  {section.items?.map((item: any, i: number) => (
+                    <div key={i} style={{ display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ position: 'relative', paddingBottom: '120%', marginBottom: '1rem', backgroundColor: '#e8e4da' }}>
+                        <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} />
+                      </div>
+                      <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.2rem' }}>{item.title}</h3>
+                      <span className="text-sans" style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.8rem' }}>{item.description}</span>
+                      <span className="text-sans" style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{item.price}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            default:
+              return null;
+          }
+        })}
 
         {/* Share / Tags */}
         <div style={{ marginTop: '4rem', paddingBottom: '2rem', borderBottom: '1px solid #d4cfc3', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

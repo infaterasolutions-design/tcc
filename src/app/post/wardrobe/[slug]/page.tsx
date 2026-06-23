@@ -1,153 +1,23 @@
-'use client';
-
-import React, { use } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import { supabase } from '../../../../lib/supabase';
+import { notFound } from 'next/navigation';
+import { ShopThePostSlider } from '../../../../components/ShopThePostSlider';
 
-interface ArticleSection {
-  type: 'h2' | 'h3' | 'p' | 'ul' | 'tip' | 'pullquote' | 'what-works' | 'image' | 'form' | 'accent-box' | 'shop-the-post';
-  id?: string;
-  text?: string;
-  heading?: string;
-  items?: string[];
-  src?: string;
-  alt?: string;
-  caption?: string;
-  bordered?: boolean;
-  products?: { url: string; image: string; alt?: string }[];
-}
-interface RelatedPost {
-  slug: string;
-  title: string;
-  category: string;
-  date: string;
-  imageUrl: string;
-}
-interface Post {
-  slug: string;
-  title: string;
-  author: string;
-  date: string;
-  readTime: string;
-  category: string;
-  intro: string;
-  heroImage: string;
-  sections: ArticleSection[];
-  relatedPosts: RelatedPost[];
-  popularPosts: RelatedPost[];
-}
+export const revalidate = 60;
 
-const mockPost: Post = {
-  slug: 'how-to-declutter-your-home',
-  title: 'How to Declutter Your Home: A Complete Room-by-Room Guide',
-  author: 'Elle Penner M.P.H., R.D.',
-  date: 'December 19, 2025',
-  readTime: '15 min',
-  category: 'Decluttering Tips',
-  intro: "Too much stuff, not enough space, and no idea where to start? When I first started decluttering, I made all the mistakes. It wasn’t pretty, but I got through it, and once I did, I decluttered our entire home.",
-  heroImage: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=1200',
-  sections: [
-    { type: 'h2', text: 'A simple formula to declutter your home (and keep it that way)' },
-    { type: 'p', text: 'Most decluttering advice tells you what to do (get rid of things) but rarely how to actually execute it. That’s where my <a href="#">SOS Declutter Method</a> comes in. It’s a repeatable process you can use in any room:' },
-    { type: 'ul', items: ['Simplify: This is decluttering to the core. Keep what you need and love.', 'Organize: Assign a logical home to everything left.', 'Systematize: Implement boundaries and small habits.'] },
-    { type: 'p', text: 'This guide will show you how to apply the <a href="#">SOS Method</a> in every room of your home—and more importantly, keep it that way. Check out the <a href="#">SOS Declutter Method Guide</a> for a deeper dive and the questions I find most helpful.' },
-    { type: 'p', text: 'If you’re looking for a clear place to start, I put together a <a href="#">room-by-room declutter checklist</a> that walks you through exactly what to let go of.' },
-    { type: 'h2', text: 'Choose a decluttering timeline that fits your life' },
-    { type: 'shop-the-post', products: [
-      { url: '#', image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 1' },
-      { url: '#', image: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=100&q=80', alt: 'Bag 1' },
-      { url: '#', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 2' },
-      { url: '#', image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=100&q=80', alt: 'Hat' },
-      { url: '#', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=100&q=80', alt: 'Shoe 3' }
-    ]},
-    { type: 'p', text: 'Every home (and season) looks a little different. Don’t feel pressured to finish your entire house in a weekend if you have kids running around.' },
-    { type: 'h3', text: 'If you live in an apartment or a smaller home' },
-    { type: 'ul', items: ['Three-month plan: Focus on one area every 1-2 weeks.', 'Two-month plan: Declutter one room or category per week.', 'One-month plan: Commit 20 minutes each day to a small area.'] },
-    { type: 'h3', text: 'If you live in a family home (3+ bedrooms)' },
-    { type: 'p', text: 'Larger homes naturally take longer—there’s more stuff and usually more people creating messes.' },
-    { type: 'ul', items: ['One-year plan: Declutter one room or category per month.', 'Six-month plan: Two rooms or categories per month.', 'Three-month plan: One room or category per week.', 'One-month sprint: Dedicate 15–30 minutes each day.'] },
-    { type: 'p', text: '<strong>Tip: Focus on momentum, not perfection. Progress is progress.</strong>' },
-    { type: 'p', text: 'Once you’ve chosen your pace, it’s time to begin!' },
-    { type: 'accent-box', heading: 'Where to start decluttering your home (and why the order matters)', text: 'Not all rooms are equal when it comes to decluttering. Here’s the order I often recommend, but tailor it to what makes the most sense for you.', items: ['Entryway & mudroom: Clears the path in and out.', 'Bathrooms: Small spaces, quick wins, and lots of expired products.', 'Kitchen: The heart of the home. Simplifying here makes life easier.', 'Toys: If you have kids, do this next.', 'Living spaces: Easier after toys are pared down.', 'Closets & clothing: High-impact but time-consuming.', 'Bedrooms: With closets simplified, this step resets the space.', 'Home office & paper: Mentally harder but high-impact.', 'Storage areas: Save these for last once your decluttering muscles are strong.'] },
-    { type: 'accent-box', bordered: true, heading: 'Helpful decluttering supplies', text: 'Having a few basic supplies handy will make the decluttering process faster and more efficient.', items: ['Trash bag: For obvious tosses and broken items.', 'Donation box or bag: For the things you no longer need.', 'Recycle bin: For paper and packaging.', 'Vacuum or handheld cleaner: For those crumbs and dust.', 'All-purpose spray + cloth: Give surfaces a quick wipe.', 'Timer: Keeps you focused and helps you avoid burnout.'] }
-  ],
-  relatedPosts: [
-    { slug: 'capsule-wardrobe-guide', title: 'Your Ultimate Fall Capsule Wardrobe 2026', category: 'FASHION', date: 'May 24, 2026', imageUrl: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=400' },
-  ],
-  popularPosts: [
-    { slug: 'organization-bins', title: 'The 10 Best Organization Bins', category: 'HOME', date: 'June 1, 2026', imageUrl: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=150' },
-    { slug: 'minimalist-kitchen', title: 'A Minimalist Guide to Kitchen Gadgets', category: 'KITCHEN', date: 'May 28, 2026', imageUrl: 'https://images.unsplash.com/photo-1572804013427-4d7ca7268217?auto=format&fit=crop&q=80&w=150' },
-    { slug: 'spring-edit', title: 'Capsule Wardrobe: The Spring Edit', category: 'FASHION', date: 'May 15, 2026', imageUrl: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=150' },
-    { slug: 'minimalist-clothing-brands', title: '30 Best Minimalist Clothing Brands', category: 'FASHION', date: 'May 10, 2026', imageUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=150' },
-  ],
-};
+export default async function WardrobeBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  
+  const { data: post, error } = await supabase
+    .from('posts')
+    .select('*, categories(label)')
+    .eq('slug', slug)
+    .single();
 
-const getPost = (slug: string): Post => ({ ...mockPost, slug });
-
-const ShopThePostSlider = ({ products }: { products: any[] }) => {
-  const [items] = React.useState(() => products.map((p, i) => ({ ...p, _id: i })));
-  const [currentIndex, setCurrentIndex] = React.useState(items.length);
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
-
-  const handleNext = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex(prev => prev + 1);
-  };
-
-  const handlePrev = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex(prev => prev - 1);
-  };
-
-  const handleTransitionEnd = () => {
-    setIsTransitioning(false);
-    if (currentIndex >= items.length * 2) {
-      setCurrentIndex(currentIndex - items.length);
-    } else if (currentIndex <= items.length - 1) {
-      setCurrentIndex(currentIndex + items.length);
-    }
-  };
-
-  if (!products || products.length === 0) return null;
-
-  const itemWidth = 120; // 100px width + 20px gap
-  const trackItems = [...items, ...items, ...items];
-
-  return (
-    <div className="shop-post-container">
-      <div className="shop-post-wrapper">
-        <button className="shop-post-btn" onClick={handlePrev}>‹</button>
-        <div className="shop-post-viewport" style={{ overflow: 'hidden', flex: 1, height: '120px' }}>
-          <div 
-            className="shop-post-track"
-            onTransitionEnd={handleTransitionEnd}
-            style={{ 
-              display: 'flex', 
-              gap: '20px', 
-              height: '100%',
-              alignItems: 'center',
-              width: 'max-content',
-              transition: isTransitioning ? 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
-              transform: `translateX(-${currentIndex * itemWidth}px)`
-            }}
-          >
-            {trackItems.map((prod, i) => (
-              <Link key={`${prod._id}-${i}`} href={prod.url} className="shop-post-item">
-                <img src={prod.image} alt={prod.alt || ''} />
-              </Link>
-            ))}
-          </div>
-        </div>
-        <button className="shop-post-btn" onClick={handleNext}>›</button>
-      </div>
-    </div>
-  );
-};
-
-export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const post = getPost(slug);
+  if (error || !post) {
+    return notFound();
+  }
 
   return (
     <div style={{ backgroundColor: '#fff', minHeight: '100vh', paddingBottom: '4rem' }}>
@@ -463,7 +333,7 @@ export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slu
         <div className="article-container">
           {/* Breadcrumb */}
         <div className="article-breadcrumb">
-          <Link href="/">Home</Link> » <Link href={`/category/${post.category.toLowerCase().replace(' ', '-')}`}>{post.category}</Link>
+          <Link href="/">Home</Link> » <Link href={`/category/${post.category_slug}`}>{post.categories?.label || 'Category'}</Link>
         </div>
 
         {/* Title */}
@@ -478,7 +348,7 @@ export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slu
         <p className="article-intro">{post.intro}</p>
 
         {/* Hero Image */}
-        <img src={post.heroImage} alt={post.title} className="article-hero-image" />
+        <img src={post.hero_image} alt={post.title} className="article-hero-image" />
 
         {/* Article Body */}
         <article className="article-body">
@@ -560,7 +430,7 @@ export default function WardrobeBlogPostPage({ params }: { params: Promise<{ slu
           <div style={{ padding: '1rem 0', width: '100%', maxWidth: '290px', margin: '0 auto' }}>
             <h3 className="text-serif" style={{ fontSize: '30px', marginBottom: '1.5rem', marginTop: 0, textAlign: 'center', fontWeight: 400 }}>Popular Posts</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-              {post.popularPosts.map((item, i) => (
+              {(post.popular_posts || []).map((item: any, i: number) => (
                 <Link key={i} href={`/post/${item.slug}`} style={{ display: 'flex', flexDirection: 'column', textDecoration: 'none', alignItems: 'center' }}>
                   <img src={item.imageUrl} alt={item.title} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', marginBottom: '10px' }} />
                   <h4 className="text-sans" style={{ fontSize: '18px', fontWeight: 500, color: '#2C2C2C', lineHeight: '24px', margin: 0, textAlign: 'center', textTransform: 'capitalize' }}>{item.title}</h4>
